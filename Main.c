@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <ctype.h> // Include ctype.h for isdigit function
 
 #define MAX_USERS 10
 #define MAX_BUSES 10
@@ -19,13 +20,14 @@ struct Passenger {
     char name[50];
     int age;
     char email[30];
+    char phoneNumber[11]; // Added phone number field
     int seatNumber;
     int busNumber;
 };
 
 struct User {
     char username[20];
-    char password[20];
+    char password[20]; // Increased password buffer size
 };
 
 // Function prototypes
@@ -34,12 +36,13 @@ void displayUserMenu();
 int loginUser(struct User users[], int numUsers, char username[], char password[]);
 void bookTicket(struct Bus buses[], int numBuses, struct Passenger passengers[], int* numPassengers, int userId);
 void cancelTicket(struct Bus buses[], int numBuses, struct Passenger passengers[], int* numPassengers, int userId);
-void checkBusStatus(struct Bus buses[], int numBuses, int userId);
+void checkBusStatus(struct Bus buses[], int numBuses); // Updated prototype
+int isNumeric(const char *str); // Added prototype for isNumeric
 
 // Main function
 int main() {
     // Initialize users and buses
-    struct User users[MAX_USERS] = {{"dsaproject", "caf613"}};
+    struct User users[MAX_USERS] = {{"admin", "admin"}};
     struct Bus buses[MAX_BUSES] = {{205, "DELHI", "VRINDAVAN", 50, 20, 100.0},
                                     {301, "RISHIKESH", "DEHRADUN", 30, 10, 150.0},
                                     {519, "PUNJAB", "SHIMLA", 40, 20, 200.0}};
@@ -93,7 +96,7 @@ int main() {
                     cancelTicket(buses, numBuses, passengers, &numPassengers, loggedInUserId);
                     break;
                 case 3:
-                    checkBusStatus(buses, numBuses, loggedInUserId);
+                    checkBusStatus(buses, numBuses);
                     break;
                 case 4:
                     printf("Logging out.\n");
@@ -161,13 +164,14 @@ void bookTicket(struct Bus buses[], int numBuses, struct Passenger passengers[],
         scanf("%s", passengers[*numPassengers].email);
 
         printf("Enter Passenger Phone Number: ");
-        char phoneNumber[11];
-        scanf("%s", phoneNumber);
+        scanf("%s", passengers[*numPassengers].phoneNumber);
+
         // Validate phone number
-        if (strlen(phoneNumber) != 10 || !isNumeric(phoneNumber)) {
+        if (strlen(passengers[*numPassengers].phoneNumber) != 10 || !isNumeric(passengers[*numPassengers].phoneNumber)) {
             printf("Invalid phone number format. Please enter a 10-digit integer.\n");
             return;
         }
+
         passengers[*numPassengers].seatNumber = buses[busIndex].totalSeats - buses[busIndex].availableSeats + 1;
         passengers[*numPassengers].busNumber = busNumber;
 
@@ -177,16 +181,6 @@ void bookTicket(struct Bus buses[], int numBuses, struct Passenger passengers[],
         (*numPassengers)++;
     }
 }
-
-// Function to check if a string consists of only numeric characters
-int isNumeric(const char *str) {
-    while (*str) {
-        if (!isdigit(*str)) return 0;
-        str++;
-    }
-    return 1;
-}
-
 
 void cancelTicket(struct Bus buses[], int numBuses, struct Passenger passengers[], int* numPassengers, int userId) {
     printf("\nEnter Passenger Name: ");
@@ -231,3 +225,10 @@ void checkBusStatus(struct Bus buses[], int numBuses) {
     }
 }
 
+int isNumeric(const char *str) {
+    while (*str) {
+        if (!isdigit(*str)) return 0;
+        str++;
+    }
+    return 1;
+}
