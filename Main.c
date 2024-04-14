@@ -44,7 +44,7 @@ int main() {
     // Initialize users and buses
     struct User users[MAX_USERS] = {{"admin", "admin"}};
     struct Bus buses[MAX_BUSES] = {{205, "DELHI", "VRINDAVAN", 50, 20, 100.0},
-                                    {301, "RISHIKESH", "DEHRADUN", 30, 10, 150.0},
+                                    {301, "RISHIKESH", "DEHRADUN", 30, 1, 150.0},
                                     {519, "PUNJAB", "SHIMLA", 40, 20, 200.0}};
     int numUsers = 1;
     int numBuses = 3;
